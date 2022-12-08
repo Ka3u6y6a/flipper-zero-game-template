@@ -1,0 +1,13 @@
+App(
+    appid="game_app", 
+    name="GAMETEMPLATE",
+    apptype=FlipperAppType.PLUGIN,
+    entry_point="game_main",
+    cdefines=["APP_GAMETEMPLATE"],
+    requires=["gui"],
+    stack_size=1 * 1024,
+    order=90,
+	fap_icon="icon.png",
+    fap_category="Games",
+    fap_icon_assets="assets",
+)
