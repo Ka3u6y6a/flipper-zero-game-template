@@ -6,23 +6,24 @@ Template for a [Flipper Zero](https://github.com/flipperdevices/flipperzero-firm
 
 ### Getting started
 
-1. Clone the [flipperzero-firmware](https://github.com/flipperdevices/flipperzero-firmware) repository or another firmware that you use (firmware list can be found here [awesome-flipperzero](https://github.com/djsime1/awesome-flipperzero#firmwares--tweaks)).
-2. Create a symbolic link in `applications_user` named **game_app** (or any another name), pointing to this repository.
-3. Compile by command `./fbt`
+1. Clone the Flipper Zero firmware repository from the following link: [flipperzero-firmware](https://github.com/flipperdevices/flipperzero-firmware)
+another firmware that you use (firmware list can be found here [awesome-flipperzero](https://github.com/djsime1/awesome-flipperzero#firmwares--tweaks)).
+2. In the `applications_user` directory, create a symbolic link named **game_app** (or any other desired name) that points to this repository.
+3. Compile firmware by running the command `./fbt` in a terminal.
 
-### Variables to change
+### Customization
 
-1. Open project folder with [Visual Studio Code](https://code.visualstudio.com/download)
-2. Open `application.fam` file and edit next values:
-appid - your unique application id without whitespaces (used in fbt compiling commands)
-name - application name that ypu see in Flipper menu
+To customize the game, open the project folder in [Visual Studio Code](https://code.visualstudio.com/download) and edit the `application.fam` file.
+In this file, you can change the `appid` filed (which should be unique and not contain any whitespace characters) and the  `name` field, which is the name that will be displayed in the Flipper menu.
 
-### Compiling variant 1
+Once the game is ready to be compiled, you have two options:
 
-1. Compile by command `./fbt game_app` (*change to your app id*)
-2. Copy `build/f7-firmware-D/.extapps/game_app.fap` (*or your_app_id.fap*) to **apps/Games** on the SD card or by [qFlipper](https://flipperzero.one/update) app.
+#### Compiling option 1
 
-### Compiling variant 2
+1. Compile by running `./fbt __your_app_id__`, e.g. `./fbt game_app`
+2. Copy `build/f7-firmware-D/.extapps/__your_app_id__.fap` to **apps/Games** on the SD card or by [qFlipper](https://flipperzero.one/update) app.
 
-1. Connect your Flipper via USB
-2. Execute command `./fbt launch_app APPSRC=game_app` (*change to your app id*), and the game will run automatically on your Flipper device after compilation.
+#### Compiling option 2
+
+1. Connect the Flipper device to your computer via USB
+2. Run the command `./fbt launch_app APPSRC=__your_app_id__` (e.g. `./fbt launch_app APPSRC=game_app`). This will compile and launch the game on the device automatically.
