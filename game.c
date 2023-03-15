@@ -24,7 +24,11 @@ static void game_update(GameState* game_state) {
 
 // draw here ui
 static void draw_callback(Canvas* canvas, void* ctx) {
-    GameState* game_state = acquire_mutex((ValueMutex*)ctx, 25);
+    furi_assert(ctx);
+
+    const GameState* game_state = ctx;
+    furi_mutex_acquire(game_state->mutex, FuriWaitForever);
+
     if(game_state == NULL) {
         return;
     }
@@ -39,7 +43,7 @@ static void draw_callback(Canvas* canvas, void* ctx) {
         canvas, SCREEN_WIDTH / 2, 5, AlignCenter, AlignCenter, "<Press arrow button>");
 
     // Draw end, release mutex
-    release_mutex((ValueMutex*)ctx, game_state);
+    furi_mutex_release(game_state->mutex);
 }
 
 static void input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
@@ -65,8 +69,8 @@ int32_t game_main() {
     // Init game with start values
     game_init(game_state);
 
-    ValueMutex state_mutex;
-    if(!init_mutex(&state_mutex, game_state, sizeof(GameState))) {
+    game_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
+    if(!game_state->mutex) {
         FURI_LOG_E(TAG, "cannot create mutex\r\n");
         free(game_state);
         return 255;
@@ -74,7 +78,7 @@ int32_t game_main() {
 
     // Set system callbacks
     ViewPort* view_port = view_port_alloc();
-    view_port_draw_callback_set(view_port, draw_callback, &state_mutex);
+    view_port_draw_callback_set(view_port, draw_callback, game_state);
     view_port_input_callback_set(view_port, input_callback, event_queue);
 
     // Set timer
@@ -89,7 +93,7 @@ int32_t game_main() {
     // Game loop
     for(bool processing = true; processing;) {
         FuriStatus event_status = furi_message_queue_get(event_queue, &event, 100);
-        GameState* game_state = (GameState*)acquire_mutex_block(&state_mutex);
+        furi_mutex_acquire(game_state->mutex, FuriWaitForever);
 
         if(event_status == FuriStatusOk) {
             // Game update event
@@ -134,7 +138,7 @@ int32_t game_main() {
         }
 
         view_port_update(view_port);
-        release_mutex(&state_mutex, game_state);
+        furi_mutex_release(game_state->mutex);
     }
 
     // Clear resources
@@ -144,6 +148,8 @@ int32_t game_main() {
     gui_remove_view_port(gui, view_port);
     view_port_free(view_port);
     furi_record_close(RECORD_GUI);
+    furi_mutex_free(game_state->mutex);
+    free(game_state);
 
     return 0;
 }

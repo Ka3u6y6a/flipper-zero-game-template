@@ -28,6 +28,8 @@ typedef struct {
     bool right;
     bool up;
     bool down;
+
+    FuriMutex* mutex;
 } GameState;
 
 void game_init(GameState* const state) {
