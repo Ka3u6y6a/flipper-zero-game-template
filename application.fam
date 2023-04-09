@@ -1,7 +1,7 @@
 App(
     appid="game_app", 
     name="GAMETEMPLATE",
-    apptype=FlipperAppType.PLUGIN,
+    apptype=FlipperAppType.EXTERNAL,
     entry_point="game_main",
     cdefines=["APP_GAMETEMPLATE"],
     requires=["gui"],
